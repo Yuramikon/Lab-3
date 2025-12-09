@@ -36,14 +36,23 @@ bool isComplete(TreeNode* root) {
 // Helper function to calculate height. You may or may not need this.
 int height(TreeNode* node) {
     // TODO: Implement this function (optional helper)
-    
+    if (!node) return 0;
+
+    int lheight = height(node->left);
+    if (lheight == -1) return -1;
+
+    int rheight = height(node->right);
+    if (rheight == -1) return -1;
+
+    if (abs(lheight - rheight) > 1) return -1;  // not balanced
+
+    return max(lheight, rheight) + 1;
     return 0;
 }
 
 bool isBalanced(TreeNode* root) {
     // TODO: Implement this function
-    
-    return false;
+    return height(root) != -1;
 }
 
 /*
