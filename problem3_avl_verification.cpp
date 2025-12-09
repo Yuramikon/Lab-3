@@ -21,10 +21,49 @@ struct TreeNode {
     Check if the given binary tree is a valid AVL tree.
 */
 
+void inorderFill(TreeNode* root, queue<int>& q) {
+    if (!root) return;
+    inorderFill(root->left, q);
+    q.push(root->val);
+    inorderFill(root->right, q);
+}
+
+bool isBST(TreeNode* root) {
+    queue<int> q;
+    inorderFill(root, q);
+
+    int prev = q.front();
+    q.pop();
+
+    while (!q.empty()) {
+        int cur = q.front();
+        q.pop();
+
+        if (cur <= prev){
+            return false;
+        }
+        prev = cur;
+    }
+    return true;
+}
+
+int height(TreeNode* node) {
+    if (!node) return 0;
+
+    int lheight = height(node->left);
+    if (lheight == -1) return -1;
+
+    int rheight = height(node->right);
+    if (rheight == -1) return -1;
+
+    if (abs(lheight - rheight) > 1) return -1;  // not balanced
+
+    return max(lheight, rheight) + 1;
+}
+
 bool isValidAVL(TreeNode* root) {
     // TODO: Implement this function
-    
-    return false;
+    return height(root) != -1 && isBST(root);
 }
 
 // Helper to delete tree
