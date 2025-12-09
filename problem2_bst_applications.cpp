@@ -20,11 +20,26 @@ struct TreeNode {
     Given the root of a binary search tree, and an integer k, return the kth smallest value (1-indexed) 
     of all the values of the nodes in the tree.
 */
+int result;        
+int counter;       
 
+void inorder(TreeNode* root) {
+    if (!root || counter == 0) return; 
+
+    inorder(root->left);
+
+    if (--counter == 0) { 
+        result = root->val;
+        return;
+    }
+
+    inorder(root->right);
+}
 int kthSmallest(TreeNode* root, int k) {
     // TODO: Implement this function
-    
-    return 0;
+    counter = k;
+    inorder(root);
+    return result;
 }
 
 /*
@@ -37,7 +52,14 @@ int kthSmallest(TreeNode* root, int k) {
 */
 TreeNode* LCA(TreeNode* root, TreeNode* p, TreeNode* q) {
     // TODO: Implement this function
-    
+    while (root) {
+        if (p->val < root->val && q->val < root->val)
+            root = root->left;
+        else if (p->val > root->val && q->val > root->val)
+            root = root->right;
+        else
+            return root; 
+    }
     return nullptr;
 }
 
@@ -49,8 +71,15 @@ TreeNode* LCA(TreeNode* root, TreeNode* p, TreeNode* q) {
 */
 int rangeSum(TreeNode* root, int L, int R) {
     // TODO: Implement this function
-    
-    return 0;
+    if (!root) return 0;
+
+    if (root->val < L)
+        return rangeSum(root->right, L, R);
+
+    if (root->val > R)
+        return rangeSum(root->left, L, R);
+
+    return root->val + rangeSum(root->left, L, R) + rangeSum(root->right, L, R);
 }
 
 /*
@@ -60,8 +89,15 @@ int rangeSum(TreeNode* root, int L, int R) {
 */
 TreeNode* invertTree(TreeNode* root) {
     // TODO: Implement this function
-    
-    return nullptr;
+    if (!root) return nullptr;
+
+    TreeNode* left = invertTree(root->left);
+    TreeNode* right = invertTree(root->right);
+
+    root->left = right;
+    root->right = left;
+
+    return root;
 }
 
 // Helper to delete tree
