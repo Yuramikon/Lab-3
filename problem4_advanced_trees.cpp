@@ -29,14 +29,23 @@ int globalMax = INT_MIN;
 
 int maxGain(TreeNode* node) {
     // TODO: Implement this helper function to return the max gain from a node down to a leaf
-    
+    if (!node) return 0;
+
+    int leftGain = max(0, maxGain(node->left));
+    int rightGain = max(0, maxGain(node->right));
+
+    int priceThroughNode = leftGain + rightGain + node->val;
+
+    globalMax = max(globalMax, priceThroughNode);
+
+    return node->val + max(leftGain, rightGain);
     return 0;
 }
 
 int maxPathSum(TreeNode* root) {
     // TODO: Implement this function
-    
-    return 0;
+    maxGain(root);
+    return globalMax;
 }
 
 /*
@@ -52,10 +61,30 @@ TreeNode* prevNode = nullptr;
 
 void inorder(TreeNode* root) {
     // TODO: Implement inorder traversal to find the two swapped nodes
+    if (!root) return;
+    inorder(root->left);
+
+    if (prevNode && root->val < prevNode->val) {
+        if (!first) {
+            first = prevNode;
+        }
+        second = root;
+    }
+    prevNode = root;
+
+    inorder(root->right);
 }
 
 void recoverTree(TreeNode* root) {
     // TODO: Implement this function
+    prevNode = nullptr;
+    first = second = nullptr;
+    
+    inorder(root);
+
+    if (first && second) {
+        std::swap(first->val, second->val);
+    }
 }
 
 // Helper to delete tree
