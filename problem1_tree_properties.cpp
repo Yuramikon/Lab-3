@@ -21,10 +21,37 @@ struct TreeNode {
     
     Check if the binary tree is a complete binary tree.
 */
+int checkHeight(TreeNode* root) {
+    if (!root) return 0;
+    return 1 + max(checkHeight(root->left), checkHeight(root->right));
+}
+
+bool check(TreeNode* root, int h) {
+    if (!root) return true;
+
+    int lh = checkHeight(root->left);
+    int rh = checkHeight(root->right);
+
+    if (!root->left && root->right)
+        return false;
+
+    if (h > 2) {
+        if (!root->left || !root->right)
+            return false;
+    }
+
+    if (h == 2) {
+        if (!root->left && root->right)
+            return false;
+    }
+
+    return check(root->left, h - 1) &&
+           check(root->right, h - 1);
+}
 bool isComplete(TreeNode* root) {
     // TODO: Implement this function
-    
-    return false;
+    int h = checkHeight(root);
+    return check(root, h);
 }
 
 /*
@@ -60,10 +87,28 @@ bool isBalanced(TreeNode* root) {
     
     Given the root of a binary tree, return the maximum width of the given tree.
 */
+int getWidth(node* root, int level)
+{
+    if (!root) 
+        return 0;
+    if (level == 1) 
+        return 1;
+    else if (level > 1)
+        return getWidth(root->left, level - 1) + getWidth(root->right, level - 1);
+}
+
 int maxWidth(TreeNode* root) {
     // TODO: Implement this function
-    
-    return 0;
+    int maxWidth = 0;
+    int width;
+    int h = checkHeight(root);
+
+    for (int i = 1; i <= h; i++) {
+        width = getWidth(root, i);
+        if (width > maxWidth)
+            maxWidth = width;
+    }
+    return maxWidth;
 }
 
 // Helper to delete tree
